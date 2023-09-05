@@ -1,6 +1,6 @@
 // src/store/modules/films.ts
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 
 interface Film {
   id: number;
@@ -20,9 +20,8 @@ class FilmsModule extends VuexModule {
   @Action
   async fetchFilms() {
     try {
-      const response = await axios.get<Array<Film>>('https://api.themoviedb.org/3/trending/movie/day?api_key=4df52b94b523539d7321c081fe52b118');
-      console.log(response.data);
-      this.context.commit('setFilms', response.data);
+      const response: AxiosResponse<{ results: Array<Film> }> = await axios.get('https://api.themoviedb.org/3/trending/movie/day?api_key=4df52b94b523539d7321c081fe52b118');
+      this.context.commit('setFilms', response.data.results);
     } catch (error) {
       console.error('Erreur lors de la récupération des films :', error);
     }
